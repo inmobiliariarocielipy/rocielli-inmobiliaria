@@ -46,6 +46,7 @@ header {
   color: var(--gold);
   font-size: 20px;
   font-weight: bold;
+  text-decoration: none;
 }
 
 .brand small {
@@ -113,6 +114,15 @@ input, select, textarea {
   margin-bottom: 15px;
 }
 
+input[type="radio"] {
+  width: auto;
+  margin: 0;
+}
+
+input[type="file"] {
+  padding: 10px;
+}
+
 textarea {
   min-height: 90px;
   resize: vertical;
@@ -135,6 +145,11 @@ textarea {
 
 .button:hover {
   opacity: .9;
+}
+
+.button:disabled {
+  opacity: .6;
+  cursor: not-allowed;
 }
 
 .secondary {
@@ -214,12 +229,61 @@ textarea {
   display: none !important;
 }
 
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+  gap: 12px;
+  margin: 12px 0 20px;
+}
+
+.photo-card {
+  border: 1px solid #e8e5dc;
+  border-radius: 6px;
+  padding: 8px;
+  min-width: 0;
+  background: white;
+}
+
+.photo-card img {
+  display: block;
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.photo-card label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.photo-card button {
+  width: 100%;
+  border: 0;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.photo-heading {
+  font-size: 16px;
+  color: var(--green);
+  margin: 15px 0 8px;
+}
+
 footer {
   background: var(--green);
   color: white;
   padding: 25px;
   text-align: center;
   font-size: 12px;
+}
+
+footer p {
+  margin-top: 4px;
 }
 
 @media (max-width: 600px) {
@@ -233,6 +297,10 @@ footer {
 
   h1 {
     font-size: 24px;
+  }
+
+  .actions {
+    width: 100%;
   }
 }
 </style>
@@ -255,7 +323,6 @@ footer {
 
 <main class="container">
 
-  <!-- LOGIN -->
   <section id="loginPanel" class="panel">
     <h1>Acceso de administrador</h1>
 
@@ -267,16 +334,14 @@ footer {
 
     <form id="loginForm">
       <label for="email">Correo electrónico</label>
-      <input
-        id="email"
+      <input id="email"
         type="email"
         autocomplete="username"
         required
         placeholder="Tu correo de administrador">
 
       <label for="password">Contraseña</label>
-      <input
-        id="password"
+      <input id="password"
         type="password"
         autocomplete="current-password"
         required
@@ -288,18 +353,16 @@ footer {
     </form>
   </section>
 
-  <!-- DASHBOARD -->
   <div id="dashboard" class="hidden">
 
     <section class="panel">
       <h1>Panel de administración</h1>
       <p class="help">
-        Añade propiedades, actualiza precios y administra la disponibilidad.
+        Añade propiedades, sube fotografías y administra la disponibilidad.
       </p>
       <p id="welcomeMessage"></p>
     </section>
 
-    <!-- PROPERTY FORM -->
     <section class="panel" id="propertyFormPanel">
       <h2 id="formHeading">Añadir propiedad</h2>
 
@@ -397,14 +460,31 @@ footer {
         <input id="area_m2" type="number"
           min="0" step="any" placeholder="85">
 
-        <label for="cover_image_url">URL de la foto principal</label>
-        <input id="cover_image_url" type="url"
-          placeholder="https://...">
+        <input id="cover_image_url" type="hidden">
+
+        <h3 class="photo-heading">Fotografías de la propiedad</h3>
 
         <p class="help">
-          Por ahora, introduce un enlace directo a una imagen.
-          Más adelante añadiremos la subida de fotos desde tu teléfono.
+          Selecciona una o varias fotos desde tu iPhone.
+          Formatos permitidos: JPG, PNG y WebP. Máximo 5 MB por foto.
+          Puedes elegir cuál será la portada.
         </p>
+
+        <label for="photoFiles">Seleccionar fotografías</label>
+        <input id="photoFiles"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          multiple>
+
+        <p class="help">
+          Las fotos nuevas se subirán cuando guardes la propiedad.
+        </p>
+
+        <div id="newPhotoPreview" class="photo-grid"></div>
+
+        <h3 class="photo-heading">Fotografías guardadas</h3>
+        <div id="existingPhotoList" class="photo-grid"></div>
+        <div id="photoMessage" aria-live="polite"></div>
 
         <div class="grid">
           <div>
@@ -439,7 +519,6 @@ footer {
       </form>
     </section>
 
-    <!-- PROPERTY LIST -->
     <section class="panel">
       <h2>Mis propiedades</h2>
 
@@ -486,8 +565,16 @@ const formMessage = document.getElementById("formMessage");
 const propertyMessage = document.getElementById("propertyMessage");
 const propertyList = document.getElementById("propertyList");
 const propertyForm = document.getElementById("propertyForm");
+const photoFilesInput = document.getElementById("photoFiles");
+const newPhotoPreview = document.getElementById("newPhotoPreview");
+const existingPhotoList = document.getElementById("existingPhotoList");
+const photoMessage = document.getElementById("photoMessage");
 
 let editingId = null;
+let selectedPhotoFiles = [];
+let savedPhotos = [];
+let selectedCover = "";
+let previewUrls = [];
 
 function showMessage(element, message, type) {
   element.innerHTML = "";
@@ -595,9 +682,8 @@ document.getElementById("loginForm").addEventListener(
 
 logoutButton.addEventListener("click", async function () {
   await supabaseClient.auth.signOut();
+  resetPropertyForm();
   setLoggedIn(false);
-  propertyForm.reset();
-  editingId = null;
   showMessage(loginMessage, "Has cerrado sesión.", "success");
 });
 
@@ -629,6 +715,326 @@ function readForm() {
   };
 }
 
+photoFilesInput.addEventListener("change", function () {
+  const files = Array.from(photoFilesInput.files || []);
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+
+  const invalidFile = files.find(function (file) {
+    return !allowedTypes.includes(file.type) ||
+      file.size > 5 * 1024 * 1024;
+  });
+
+  if (invalidFile) {
+    photoFilesInput.value = "";
+    selectedPhotoFiles = [];
+    clearPreviews();
+
+    showMessage(
+      photoMessage,
+      "Cada foto debe ser JPG, PNG o WebP y pesar como máximo 5 MB.",
+      "error"
+    );
+    return;
+  }
+
+  selectedPhotoFiles = files;
+
+  if (selectedCover.startsWith("new:")) {
+    const index = Number(selectedCover.slice(4));
+    if (index >= files.length) selectedCover = "";
+  }
+
+  if (!selectedCover && files.length) {
+    selectedCover = "new:0";
+  }
+
+  showMessage(photoMessage, "", "");
+  renderNewPhotos();
+});
+
+function clearPreviews() {
+  previewUrls.forEach(function (url) {
+    URL.revokeObjectURL(url);
+  });
+
+  previewUrls = [];
+  newPhotoPreview.innerHTML = "";
+}
+
+function renderNewPhotos() {
+  clearPreviews();
+
+  selectedPhotoFiles.forEach(function (file, index) {
+    const card = document.createElement("div");
+    card.className = "photo-card";
+
+    const img = document.createElement("img");
+    img.alt = "Vista previa de foto " + (index + 1);
+
+    const url = URL.createObjectURL(file);
+    previewUrls.push(url);
+    img.src = url;
+
+    const label = document.createElement("label");
+    const radio = document.createElement("input");
+
+    radio.type = "radio";
+    radio.name = "coverChoice";
+    radio.checked = selectedCover === "new:" + index;
+
+    radio.addEventListener("change", function () {
+      selectedCover = "new:" + index;
+      document.getElementById("cover_image_url").value = "";
+      renderNewPhotos();
+      renderSavedPhotos();
+    });
+
+    label.appendChild(radio);
+    label.appendChild(document.createTextNode("Usar como portada"));
+
+    card.appendChild(img);
+    card.appendChild(label);
+    newPhotoPreview.appendChild(card);
+  });
+}
+
+function renderSavedPhotos() {
+  existingPhotoList.innerHTML = "";
+
+  savedPhotos.forEach(function (photo) {
+    const card = document.createElement("div");
+    card.className = "photo-card";
+
+    const img = document.createElement("img");
+    img.src = photo.image_url;
+    img.alt = photo.alt_text_es || "Foto de propiedad";
+
+    const label = document.createElement("label");
+    const radio = document.createElement("input");
+
+    radio.type = "radio";
+    radio.name = "coverChoice";
+
+    radio.checked =
+      selectedCover === "saved:" + photo.id ||
+      (!selectedCover &&
+        document.getElementById("cover_image_url").value === photo.image_url);
+
+    radio.addEventListener("change", function () {
+      selectedCover = "saved:" + photo.id;
+      document.getElementById("cover_image_url").value = photo.image_url;
+      renderSavedPhotos();
+      renderNewPhotos();
+    });
+
+    label.appendChild(radio);
+    label.appendChild(document.createTextNode("Usar como portada"));
+
+    const removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.className = "danger";
+    removeButton.textContent = "Eliminar foto";
+    removeButton.addEventListener("click", function () {
+      deleteSavedPhoto(photo);
+    });
+
+    card.appendChild(img);
+    card.appendChild(label);
+    card.appendChild(removeButton);
+
+    existingPhotoList.appendChild(card);
+  });
+}
+
+async function loadSavedPhotos(propertyId) {
+  savedPhotos = [];
+  selectedCover = "";
+  existingPhotoList.innerHTML = "";
+
+  const { data, error } = await supabaseClient
+    .from("property_photos")
+    .select("*")
+    .eq("property_id", propertyId)
+    .order("display_order", { ascending: true });
+
+  if (error) {
+    showMessage(
+      photoMessage,
+      "No se pudieron cargar las fotos: " + error.message,
+      "error"
+    );
+    return;
+  }
+
+  savedPhotos = data || [];
+
+  const coverUrl = document.getElementById("cover_image_url").value;
+  const coverPhoto = savedPhotos.find(function (photo) {
+    return photo.image_url === coverUrl;
+  });
+
+  if (coverPhoto) {
+    selectedCover = "saved:" + coverPhoto.id;
+  }
+
+  renderSavedPhotos();
+}
+
+async function uploadSelectedPhotos(propertyId) {
+  const uploadedPhotos = [];
+
+  for (let i = 0; i < selectedPhotoFiles.length; i++) {
+    const file = selectedPhotoFiles[i];
+
+    const extension =
+      file.name.split(".").pop().toLowerCase().replace(/[^a-z0-9]/g, "") ||
+      "jpg";
+
+    const path =
+      propertyId + "/" + Date.now() + "_" +
+      crypto.randomUUID() + "." + extension;
+
+    const { error: uploadError } = await supabaseClient.storage
+      .from("property-photos")
+      .upload(path, file, {
+        cacheControl: "3600",
+        upsert: false,
+        contentType: file.type
+      });
+
+    if (uploadError) {
+      throw new Error(
+        "No se pudo subir " + file.name + ": " + uploadError.message
+      );
+    }
+
+    const { data: urlData } = supabaseClient.storage
+      .from("property-photos")
+      .getPublicUrl(path);
+
+    const { data: photoRow, error: insertError } = await supabaseClient
+      .from("property_photos")
+      .insert({
+        property_id: propertyId,
+        image_url: urlData.publicUrl,
+        alt_text_es: "Foto de propiedad",
+        display_order: savedPhotos.length + i
+      })
+      .select()
+      .single();
+
+    if (insertError) {
+      throw new Error(
+        "La foto se subió, pero no se pudo guardar en la galería: " +
+        insertError.message
+      );
+    }
+
+    uploadedPhotos.push(photoRow);
+  }
+
+  savedPhotos = savedPhotos.concat(uploadedPhotos);
+
+  if (selectedCover.startsWith("new:")) {
+    const index = Number(selectedCover.slice(4));
+
+    if (uploadedPhotos[index]) {
+      document.getElementById("cover_image_url").value =
+        uploadedPhotos[index].image_url;
+    }
+  }
+
+  if (
+    !document.getElementById("cover_image_url").value &&
+    uploadedPhotos.length
+  ) {
+    document.getElementById("cover_image_url").value =
+      uploadedPhotos[0].image_url;
+  }
+
+  const coverUrl = document.getElementById("cover_image_url").value;
+
+  if (coverUrl) {
+    const { error: coverError } = await supabaseClient
+      .from("properties")
+      .update({ cover_image_url: coverUrl })
+      .eq("id", propertyId);
+
+    if (coverError) {
+      throw new Error(
+        "Las fotos se subieron, pero no se pudo guardar la portada: " +
+        coverError.message
+      );
+    }
+  }
+
+  selectedPhotoFiles = [];
+  photoFilesInput.value = "";
+  clearPreviews();
+
+  await loadSavedPhotos(propertyId);
+}
+
+async function deleteSavedPhoto(photo) {
+  if (!window.confirm("¿Quieres eliminar esta foto?")) return;
+
+  const { error } = await supabaseClient
+    .from("property_photos")
+    .delete()
+    .eq("id", photo.id);
+
+  if (error) {
+    showMessage(
+      photoMessage,
+      "No se pudo eliminar la foto: " + error.message,
+      "error"
+    );
+    return;
+  }
+
+  const marker = "/storage/v1/object/public/property-photos/";
+  const index = photo.image_url.indexOf(marker);
+
+  if (index !== -1) {
+    const path = decodeURIComponent(
+      photo.image_url.slice(index + marker.length)
+    );
+
+    const { error: storageError } = await supabaseClient.storage
+      .from("property-photos")
+      .remove([path]);
+
+    if (storageError) {
+      showMessage(
+        photoMessage,
+        "La foto se quitó de la galería, pero no se pudo borrar el archivo.",
+        "error"
+      );
+    }
+  }
+
+  savedPhotos = savedPhotos.filter(function (item) {
+    return item.id !== photo.id;
+  });
+
+  if (selectedCover === "saved:" + photo.id) {
+    const nextPhoto = savedPhotos[0] || null;
+    selectedCover = nextPhoto ? "saved:" + nextPhoto.id : "";
+
+    const nextUrl = nextPhoto ? nextPhoto.image_url : null;
+    document.getElementById("cover_image_url").value = nextUrl || "";
+
+    await supabaseClient
+      .from("properties")
+      .update({ cover_image_url: nextUrl })
+      .eq("id", photo.property_id);
+  }
+
+  renderSavedPhotos();
+
+  showMessage(photoMessage, "Foto eliminada.", "success");
+}
+
 propertyForm.addEventListener("submit", async function (event) {
   event.preventDefault();
 
@@ -640,14 +1046,20 @@ propertyForm.addEventListener("submit", async function (event) {
     !userData.user ||
     userData.user.id !== ADMIN_UID
   ) {
-    showMessage(formMessage, "Tu sesión ha caducado. Inicia sesión de nuevo.", "error");
+    showMessage(
+      formMessage,
+      "Tu sesión ha caducado. Inicia sesión de nuevo.",
+      "error"
+    );
     setLoggedIn(false);
     return;
   }
 
   const property = readForm();
+  const saveButton = document.getElementById("saveButton");
 
-  document.getElementById("saveButton").disabled = true;
+  saveButton.disabled = true;
+
   showMessage(formMessage, "Guardando propiedad...", "success");
 
   let result;
@@ -665,7 +1077,7 @@ propertyForm.addEventListener("submit", async function (event) {
       .select();
   }
 
-  document.getElementById("saveButton").disabled = false;
+  saveButton.disabled = false;
 
   if (result.error) {
     showMessage(
@@ -676,10 +1088,62 @@ propertyForm.addEventListener("submit", async function (event) {
     return;
   }
 
+  const propertyId = editingId ||
+    (result.data && result.data[0] && result.data[0].id);
+
+  if (!propertyId) {
+    showMessage(
+      formMessage,
+      "La propiedad se guardó, pero no se pudo identificar su registro.",
+      "error"
+    );
+    return;
+  }
+
+  if (selectedPhotoFiles.length) {
+    saveButton.disabled = true;
+
+    try {
+      showMessage(
+        formMessage,
+        "Propiedad guardada. Subiendo fotografías...",
+        "success"
+      );
+
+      await uploadSelectedPhotos(propertyId);
+    } catch (photoError) {
+      showMessage(formMessage, photoError.message, "error");
+      saveButton.disabled = false;
+      await loadProperties();
+      return;
+    }
+
+    saveButton.disabled = false;
+  } else {
+    const coverUrl = document.getElementById("cover_image_url").value || null;
+
+    const { error: coverError } = await supabaseClient
+      .from("properties")
+      .update({ cover_image_url: coverUrl })
+      .eq("id", propertyId);
+
+    if (coverError) {
+      showMessage(
+        formMessage,
+        "Propiedad guardada, pero no se pudo actualizar la portada: " +
+        coverError.message,
+        "error"
+      );
+      await loadProperties();
+      return;
+    }
+  }
+
   showMessage(
     formMessage,
-    editingId ? "Propiedad actualizada correctamente." :
-      "Propiedad guardada correctamente.",
+    editingId
+      ? "Propiedad actualizada correctamente."
+      : "Propiedad guardada correctamente.",
     "success"
   );
 
@@ -689,7 +1153,17 @@ propertyForm.addEventListener("submit", async function (event) {
 
 function resetPropertyForm() {
   editingId = null;
+  selectedPhotoFiles = [];
+  savedPhotos = [];
+  selectedCover = "";
+
   propertyForm.reset();
+  photoFilesInput.value = "";
+  clearPreviews();
+
+  existingPhotoList.innerHTML = "";
+  showMessage(photoMessage, "", "");
+  showMessage(formMessage, "", "");
 
   document.getElementById("bedrooms").value = "0";
   document.getElementById("bathrooms").value = "0";
@@ -784,7 +1258,7 @@ async function loadProperties() {
   });
 }
 
-function editProperty(property) {
+async function editProperty(property) {
   editingId = property.id;
 
   const fields = [
@@ -816,6 +1290,10 @@ function editProperty(property) {
   document.getElementById("featured").value =
     property.featured ? "true" : "false";
 
+  selectedPhotoFiles = [];
+  photoFilesInput.value = "";
+  clearPreviews();
+
   document.getElementById("formHeading").textContent =
     "Editar propiedad";
 
@@ -825,6 +1303,10 @@ function editProperty(property) {
   document.getElementById("cancelEditButton").classList.remove("hidden");
 
   showMessage(formMessage, "", "");
+  showMessage(photoMessage, "", "");
+
+  await loadSavedPhotos(property.id);
+
   document.getElementById("propertyFormPanel").scrollIntoView({
     behavior: "smooth"
   });
@@ -849,6 +1331,20 @@ async function deleteProperty(property) {
     return;
   }
 
+  const { data: photos, error: photoError } = await supabaseClient
+    .from("property_photos")
+    .select("image_url")
+    .eq("property_id", property.id);
+
+  if (photoError) {
+    showMessage(
+      propertyMessage,
+      "No se pudieron comprobar las fotos: " + photoError.message,
+      "error"
+    );
+    return;
+  }
+
   const { error } = await supabaseClient
     .from("properties")
     .delete()
@@ -861,6 +1357,32 @@ async function deleteProperty(property) {
       "error"
     );
     return;
+  }
+
+  const marker = "/storage/v1/object/public/property-photos/";
+
+  const paths = (photos || []).map(function (photo) {
+    const index = photo.image_url.indexOf(marker);
+
+    return index === -1
+      ? null
+      : decodeURIComponent(photo.image_url.slice(index + marker.length));
+  }).filter(Boolean);
+
+  if (paths.length) {
+    const { error: storageError } = await supabaseClient.storage
+      .from("property-photos")
+      .remove(paths);
+
+    if (storageError) {
+      showMessage(
+        propertyMessage,
+        "La propiedad se eliminó, pero algunos archivos de fotos quedaron en el almacenamiento.",
+        "error"
+      );
+      await loadProperties();
+      return;
+    }
   }
 
   showMessage(propertyMessage, "Propiedad eliminada.", "success");
