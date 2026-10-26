@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#17231d">
+  <meta name="description" content="ROCIELLI INMOBILIARIA. Venta, alquiler y administración de propiedades en Paraguay.">
+  <title>ROCIELLI INMOBILIARIA | Propiedades en Paraguay</title>
+  <style>
+    :root {
+      --green: #17231d;
+      --gold: #c5a15b;
+      --cream: #f8f6f0;
+      --white: #ffffff;
+      --text: #252922;
+      --muted: #77796f;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    header {
+      background: var(--green);
+      color: var(--white);
+      padding: 18px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .brand {
+      color: var(--gold);
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+    .brand small {
+      display: block;
+      color: white;
+      font-size: 10px;
+      letter-spacing: 2px;
+      font-weight: normal;
+    }
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    nav a {
+      font-size: 13px;
+    }
+    nav a:hover {
+      color: var(--gold);
+    }
+    .language {
+      background: transparent;
+      color: white;
+      border: 1px solid var(--gold);
+      padding: 8px 10px;
+      border-radius: 4px;
+    }
+    .hero {
+      min-height: 440px;
+      padding: 75px 7%;
+      display: flex;
+      align-items: center;
+      background:
+        linear-gradient(90deg, rgba(12,20,15,.91), rgba(12,20,15,.36)),
+        url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1800&q=85")
+        center/cover;
+      color: white;
+    }
+    .hero-content {
+      max-width: 650px;
+    }
+    .eyebrow {
+      color: var(--gold);
+      font-size: 12px;
+      letter-spacing: 3px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-size: clamp(35px, 7vw, 58px);
+      line-height: 1.12;
+      margin: 18px 0;
+    }
+    .hero p {
+      color: #eeeeea;
+      max-width: 520px;
+      margin-bottom: 25px;
+    }
+    .button {
+      display: inline-block;
+      padding: 13px 20px;
+      background: var(--gold);
+      color: #172019;
+      border: none;
+      border-radius: 3px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .button:hover {
+      opacity: .9;
+    }
+    .search-box {
+      background: white;
+      width: 88%;
+      max-width: 1050px;
+      margin: -30px auto 50px;
+      padding: 22px;
+      position: relative;
+      box-shadow: 0 8px 30px rgba(0,0,0,.08);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr) auto;
+      gap: 12px;
+    }
+    .search-box select,
+    .search-box input {
+      min-width: 0;
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #deded6;
+      border-radius: 3px;
+      background: white;
+      font-size: 14px;
+    }
+    section {
+      padding: 35px 6% 55px;
+    }
+    .section-heading {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .section-heading h2 {
+      font-size: 30px;
+      margin: 8px 0;
+      color: var(--green);
+    }
+    .section-heading p {
+      color: var(--muted);
+    }
+    .properties {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+      margin: auto;
+    }
+    .property {
+      background: white;
+      border: 1px solid #eae8e0;
+      overflow: hidden;
+      transition: transform .2s;
+    }
+    .property:hover {
+      transform: translateY(-4px);
+    }
+    .property img {
+      display: block;
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+    .property-content {
+      padding: 20px;
+    }
+    .tag {
+      display: inline-block;
+      background: #f0e8d5;
+      color: #735a2d;
+      padding: 4px 9px;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .property h3 {
+      margin: 12px 0 5px;
+      font-size: 19px;
+    }
+    .location {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .price {
+      margin: 15px 0;
+      color: #95743a;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .details {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid #eee;
+      padding-top: 13px;
+      font-size: 12px;
+      color: var(--muted);
+      gap: 8px;
+    }
+    .property .button {
+      display: block;
+      text-align: center;
+      margin-top: 17px;
+    }
+    .about {
+      background: var(--green);
+      color: white;
+      text-align: center;
+      padding: 65px 8%;
+    }
+    .about h2 {
+      color: var(--gold);
+      font-size: 30px;
+      margin-bottom: 15px;
+    }
+    .about p {
+      max-width: 700px;
+      margin: auto;
+      color: #e5e5df;
+    }
+    .contact {
+      text-align: center;
+      padding: 60px 6%;
+    }
+    .contact h2 {
+      font-size: 30px;
+      color: var(--green);
+      margin-bottom: 12px;
+    }
+    .contact p {
+      margin-bottom: 22px;
+      color: var(--muted);
+    }
+    footer {
+      background: #101812;
+      color: #deded6;
+      padding: 30px 6%;
+      text-align: center;
+      font-size: 12px;
+    }
+    footer strong {
+      display: block;
+      color: var(--gold);
+      font-size: 17px;
+      margin-bottom: 7px;
+    }
+    @media (max-width: 800px) {
+      header {
+        justify-content: center;
+      }
+      nav {
+        justify-content: center;
+      }
+      .search-box {
+        grid-template-columns: 1fr 1fr;
+      }
+      .properties {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 520px) {
+      header {
+        padding: 18px 4%;
+      }
+      nav {
+        gap: 12px;
+      }
+      nav a {
+        font-size: 12px;
+      }
+      .hero {
+        min-height: 400px;
+        padding: 55px 6%;
+      }
+      .search-box {
+        width: 92%;
+        grid-template-columns: 1fr;
+      }
+      .properties {
+        grid-template-columns: 1fr;
+      }
+      .property img {
+        height: 240px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="#" class="brand">
+      ROCIELLI
+      <small>INMOBILIARIA</small>
+    </a>
+<nav>
+  <a href="#inicio" data-es="Inicio" data-en="Home">Inicio</a>
+  <a href="#propiedades" data-es="Propiedades" data-en="Properties">Propiedades</a>
+  <a href="#nosotros" data-es="Nosotros" data-en="About Us">Nosotros</a>
+  <a href="#contacto" data-es="Contacto" data-en="Contact">Contacto</a>
+  <button class="language" id="languageButton" type="button">EN</button>
+</nav>
+  </header>
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-content">
+        <span class="eyebrow" data-es="Bienvenido a Rocielli" data-en="Welcome to Rocielli">Bienvenido a Rocielli</span>
+    <h1 data-es="Encuentra el lugar donde comienza tu historia."
+        data-en="Find the place where your story begins.">
+      Encuentra el lugar donde comienza tu historia.
+    </h1>
+    <p data-es="Descubre propiedades seleccionadas para vivir, invertir y construir tu futuro en Paraguay."
+       data-en="Discover carefully selected properties to live, invest, and build your future in Paraguay.">
+      Descubre propiedades seleccionadas para vivir, invertir y construir tu futuro en Paraguay.
+    </p>
+    <a href="#propiedades" class="button"
+       data-es="EXPLORAR PROPIEDADES"
+       data-en="EXPLORE PROPERTIES">EXPLORAR PROPIEDADES</a>
+  </div>
+</section>
+<form class="search-box" id="searchForm">
+  <select id="typeFilter" aria-label="Tipo de propiedad">
+    <option value="" data-es="Todos los tipos" data-en="All property types">Todos los tipos</option>
+    <option value="Apartamento" data-es="Apartamento" data-en="Apartment">Apartamento</option>
+    <option value="Casa" data-es="Casa" data-en="House">Casa</option>
+    <option value="Terreno" data-es="Terreno" data-en="Land">Terreno</option>
+    <option value="Comercial" data-es="Comercial" data-en="Commercial">Comercial</option>
+  </select>
+  <input id="locationFilter" type="search"
+    placeholder="Ciudad o barrio"
+    data-placeholder-es="Ciudad o barrio"
+    data-placeholder-en="City or neighborhood"
+    aria-label="Ciudad o barrio">
+  <select id="purposeFilter" aria-label="Operación">
+    <option value="" data-es="Venta y alquiler" data-en="Sale and rent">Venta y alquiler</option>
+    <option value="Alquiler" data-es="Alquiler" data-en="Rent">Alquiler</option>
+    <option value="Venta" data-es="Venta" data-en="Sale">Venta</option>
+  </select>
+  <button type="submit" class="button"
+    data-es="BUSCAR" data-en="SEARCH">BUSCAR</button>
+</form>
+<section id="propiedades">
+  <div class="section-heading">
+    <span class="eyebrow">ROCIELLI INMOBILIARIA</span>
+    <h2 data-es="Propiedades destacadas" data-en="Featured Properties">Propiedades destacadas</h2>
+    <p data-es="Descubre oportunidades inmobiliarias en Paraguay."
+       data-en="Discover real estate opportunities in Paraguay.">
+      Descubre oportunidades inmobiliarias en Paraguay.
+    </p>
+  </div>
+  <div class="properties" id="propertyList">
+    <article class="property" data-type="Apartamento" data-purpose="Alquiler" data-location="Barrio Jara Asuncion">
+      <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=900&q=80"
+           alt="Interior moderno de un apartamento" loading="lazy">
+      <div class="property-content">
+        <span class="tag" data-es="Alquiler" data-en="For Rent">Alquiler</span>
+        <h3 data-es="Apartamento moderno" data-en="Modern Apartment">Apartamento moderno</h3>
+        <p class="location">Barrio Jara, Asunción</p>
+        <p class="price">Consultar precio</p>
+        <div class="details">
+          <span data-es="Apartamento" data-en="Apartment">Apartamento</span>
+          <span>Paraguay</span>
+        </div>
+        <a class="button inquiry"
+           href="mailto:inmobiliariarocielipy@gmail.com?subject=Consulta%20sobre%20apartamento%20en%20Barrio%20Jara"
+           data-es="ENVIAR CONSULTA" data-en="SEND INQUIRY">ENVIAR CONSULTA</a>
+      </div>
+    </article>
+    <article class="property" data-type="Casa" data-purpose="Alquiler" data-location="Villa Morra Asuncion">
+      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80"
+           alt="Casa contemporánea" loading="lazy">
+      <div class="property-content">
+        <span class="tag" data-es="Alquiler" data-en="For Rent">Alquiler</span>
+        <h3 data-es="Casa contemporánea" data-en="Contemporary House">Casa contemporánea</h3>
+        <p class="location">Villa Morra, Asunción</p>
+        <p class="price">Consultar precio</p>
+        <div class="details">
+          <span data-es="Casa familiar" data-en="Family house">Casa familiar</span>
+          <span>Paraguay</span>
+        </div>
+        <a class="button inquiry"
+           href="mailto:inmobiliariarocielipy@gmail.com?subject=Consulta%20sobre%20casa%20en%20Villa%20Morra"
+           data-es="ENVIAR CONSULTA" data-en="SEND INQUIRY">ENVIAR CONSULTA</a>
+      </div>
+    </article>
+    <article class="property" data-type="Comercial" data-purpose="Alquiler" data-location="Luque Paraguay">
+      <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80"
+           alt="Espacio comercial moderno" loading="lazy">
+      <div class="property-content">
+        <span class="tag" data-es="Comercial" data-en="Commercial">Comercial</span>
+        <h3 data-es="Espacio comercial" data-en="Commercial Space">Espacio comercial</h3>
+        <p class="location">Luque, Paraguay</p>
+        <p class="price">Consultar precio</p>
+        <div class="details">
+          <span data-es="Uso comercial" data-en="Commercial use">Uso comercial</span>
+          <span>Paraguay</span>
+        </div>
+        <a class="button inquiry"
+           href="mailto:inmobiliariarocielipy@gmail.com?subject=Consulta%20sobre%20espacio%20comercial%20en%20Luque"
+           data-es="ENVIAR CONSULTA" data-en="SEND INQUIRY">ENVIAR CONSULTA</a>
+      </div>
+    </article>
+  </div>
+  <p id="noResults" hidden style="text-align:center;padding:30px;">
+    No se encontraron propiedades con esos filtros.
+  </p>
+</section>
+<section class="about" id="nosotros">
+  <h2 data-es="Tu próximo capítulo comienza aquí."
+      data-en="Your next chapter begins here.">
+    Tu próximo capítulo comienza aquí.
+  </h2>
+  <p data-es="En Rocielli Inmobiliaria te ayudamos a explorar oportunidades de venta, alquiler y administración de propiedades en Paraguay, con atención profesional y personalizada."
+     data-en="At Rocielli Inmobiliaria, we help you explore property sales, rentals, and property management opportunities in Paraguay with professional, personalized service.">
+    En Rocielli Inmobiliaria te ayudamos a explorar oportunidades de venta, alquiler y administración de propiedades en Paraguay, con atención profesional y personalizada.
+  </p>
+</section>
+<section class="contact" id="contacto">
+  <h2 data-es="¿Buscas tu próxima propiedad?"
+      data-en="Looking for your next property?">
+    ¿Buscas tu próxima propiedad?
+  </h2>
+  <p data-es="Escríbenos por correo electrónico para solicitar información."
+     data-en="Email us to request more information.">
+    Escríbenos por correo electrónico para solicitar información.
+  </p>
+  <a class="button"
+     href="mailto:inmobiliariarocielipy@gmail.com?subject=Consulta%20inmobiliaria"
+     data-es="CONTACTAR POR EMAIL"
+     data-en="CONTACT BY EMAIL">CONTACTAR POR EMAIL</a>
+</section>
+  </main>
+  <footer>
+    <strong>ROCIELLI INMOBILIARIA</strong>
+    <p>VENTA • ALQUILER • ADMINISTRACIÓN DE PROPIEDADES</p>
+    <p>inmobiliariarocielipy@gmail.com</p>
+    <p style="margin-top:12px;">© <span id="year"></span> Rocielli Inmobiliaria. Todos los derechos reservados.</p>
+  </footer>
+  <script>
+    let currentLanguage = "es";
+    const languageButton = document.getElementById("languageButton");
+    languageButton.addEventListener("click", function () {
+      currentLanguage = currentLanguage === "es" ? "en" : "es";
+      document.documentElement.lang = currentLanguage;
+      document.querySelectorAll("[data-es][data-en]").forEach(function (element) {
+        element.textContent = element.getAttribute("data-" + currentLanguage);
+      });
+      document.querySelectorAll("[data-placeholder-es][data-placeholder-en]").forEach(function (element) {
+        element.placeholder = element.getAttribute("data-placeholder-" + currentLanguage);
+      });
+      languageButton.textContent = currentLanguage === "es" ? "EN" : "ES";
+      document.getElementById("noResults").textContent =
+        currentLanguage === "es"
+          ? "No se encontraron propiedades con esos filtros."
+          : "No properties match your filters.";
+    });
+    document.getElementById("searchForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      const type = document.getElementById("typeFilter").value;
+      const location = document.getElementById("locationFilter").value
+        .trim().toLowerCase();
+      const purpose = document.getElementById("purposeFilter").value;
+      let visibleCount = 0;
+      document.querySelectorAll(".property").forEach(function (property) {
+        const matchesType = !type || property.dataset.type === type;
+        const matchesPurpose = !purpose || property.dataset.purpose === purpose;
+        const matchesLocation = !location ||
+          property.dataset.location.toLowerCase().includes(location);
+        const visible = matchesType && matchesPurpose && matchesLocation;
+        property.style.display = visible ? "" : "none";
+        if (visible) visibleCount++;
+      });
+      document.getElementById("noResults").hidden = visibleCount !== 0;
+      document.getElementById("propiedades").scrollIntoView({
+        behavior: "smooth"
+      });
+    });
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
