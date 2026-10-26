@@ -450,53 +450,339 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-    const SUPABASE_URL = "https://ytcvrrwncopqkvutkacz.supabase.co";
-    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_lYUm2-4zY8fo9w2qbs6ESg_Lq8ElBNG";
+const SUPABASE_URL = "https://ytcvrrwncopqkvutkacz.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_lYUm2-4zY8fo9w2qbs6ESg_Lq8ElBNG";
 
-    const supabaseClient = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_PUBLISHABLE_KEY
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+let currentLanguage = "es";
+let allProperties = [];
+
+const propertyList = document.getElementById("propertyList");
+const noResults = document.getElementById("noResults");
+
+// Convert database values into customer-friendly labels.
+function propertyType(value) {
+  const types = {
+    apartment: ["Apartamento", "Apartment"],
+    house: ["Casa", "House"],
+    land: ["Terreno", "Land"],
+    commercial: ["Comercial", "Commercial"]
+  };
+
+  return types[value] || [value || "Propiedad", value || "Property"];
+}
+
+function transactionType(value) {
+  const types = {
+    rent: ["Alquiler", "For Rent"],
+    sale: ["Venta", "For Sale"]
+  };
+
+  return types[value] || [value || "", value || ""];
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, function (char) {
+    return {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[char];
+  });
+}
+
+function formatPrice(property) {
+  if (property.price == null || property.price === "") {
+    return currentLanguage === "es"
+      ? "Consultar precio"
+      : "Price upon request";
+  }
+
+  const currency = property.currency || "PYG";
+  const amount = Number(property.price);
+
+  if (!Number.isFinite(amount)) {
+    return escapeHTML(property.price);
+  }
+
+  try {
+    return new Intl.NumberFormat(
+      currentLanguage === "es" ? "es-PY" : "en-US",
+      {
+        style: "currency",
+        currency: currency,
+        maximumFractionDigits: 0
+      }
+    ).format(amount);
+  } catch (error) {
+    return escapeHTML(amount) + " " + escapeHTML(currency);
+  }
+}
+
+function getCoverImage(property, photos) {
+  if (property.cover_image_url) {
+    return property.cover_image_url;
+  }
+
+  if (photos && photos.length) {
+    const sortedPhotos = [...photos].sort(
+      (a, b) => (a.display_order || 0) - (b.display_order || 0)
     );
 
-    let currentLanguage = "es";
-    const languageButton = document.getElementById("languageButton");
-    languageButton.addEventListener("click", function () {
-      currentLanguage = currentLanguage === "es" ? "en" : "es";
-      document.documentElement.lang = currentLanguage;
-      document.querySelectorAll("[data-es][data-en]").forEach(function (element) {
-        element.textContent = element.getAttribute("data-" + currentLanguage);
-      });
-      document.querySelectorAll("[data-placeholder-es][data-placeholder-en]").forEach(function (element) {
-        element.placeholder = element.getAttribute("data-placeholder-" + currentLanguage);
-      });
-      languageButton.textContent = currentLanguage === "es" ? "EN" : "ES";
-      document.getElementById("noResults").textContent =
+    return sortedPhotos[0].image_url || "";
+  }
+
+  return "";
+}
+
+function renderProperties(properties) {
+  propertyList.innerHTML = "";
+
+  if (!properties.length) {
+    noResults.hidden = false;
+    noResults.textContent = currentLanguage === "es"
+      ? "No hay propiedades disponibles que coincidan con tu búsqueda."
+      : "No available properties match your search.";
+    return;
+  }
+
+  noResults.hidden = true;
+
+  properties.forEach(function (property) {
+    const type = propertyType(property.property_type);
+    const purpose = transactionType(property.transaction_type);
+
+    const title = currentLanguage === "es"
+      ? (property.title_es || property.title_en || "Propiedad")
+      : (property.title_en || property.title_es || "Property");
+
+    const description = currentLanguage === "es"
+      ? (property.description_es || property.description_en || "")
+      : (property.description_en || property.description_es || "");
+
+    const location = [
+      property.neighborhood,
+      property.city
+    ].filter(Boolean).join(", ");
+
+    const photo = getCoverImage(property, property.property_photos);
+
+    const imageHTML = photo
+      ? `<img src="${escapeHTML(photo)}"
+           alt="${escapeHTML(title)}"
+           loading="lazy"
+           onerror="this.style.display='none'">`
+      : `<div style="height:220px;display:flex;align-items:center;justify-content:center;background:#eee8dc;color:#665b47;">
+           ${currentLanguage === "es" ? "Foto no disponible" : "No photo available"}
+         </div>`;
+
+    const details = [];
+
+    if (property.bedrooms != null) {
+      details.push(
         currentLanguage === "es"
-          ? "No se encontraron propiedades con esos filtros."
-          : "No properties match your filters.";
+          ? `${property.bedrooms} habitaciones`
+          : `${property.bedrooms} bedrooms`
+      );
+    }
+
+    if (property.bathrooms != null) {
+      details.push(
+        currentLanguage === "es"
+          ? `${property.bathrooms} baños`
+          : `${property.bathrooms} bathrooms`
+      );
+    }
+
+    if (property.area_m2 != null) {
+      details.push(`${property.area_m2} m²`);
+    }
+
+    const card = document.createElement("article");
+    card.className = "property";
+
+    card.dataset.type = type[0];
+    card.dataset.purpose = purpose[0];
+    card.dataset.location = location;
+
+    card.innerHTML = `
+      ${imageHTML}
+
+      <div class="property-content">
+        <span class="tag">
+          ${escapeHTML(purpose[currentLanguage === "es" ? 0 : 1])}
+        </span>
+
+        <h3>${escapeHTML(title)}</h3>
+
+        <p class="location">${escapeHTML(location || "Paraguay")}</p>
+
+        <p class="price">${formatPrice(property)}</p>
+
+        <div class="details">
+          <span>${escapeHTML(type[currentLanguage === "es" ? 0 : 1])}</span>
+          <span>${escapeHTML(details.join(" · "))}</span>
+        </div>
+
+        ${
+          description
+            ? `<p style="margin-top:14px;font-size:13px;">
+                 ${escapeHTML(description)}
+               </p>`
+            : ""
+        }
+
+        <a class="button inquiry"
+           href="mailto:inmobiliariarocielipy@gmail.com?subject=${encodeURIComponent(title)}"
+           data-es="ENVIAR CONSULTA"
+           data-en="SEND INQUIRY">
+          ${currentLanguage === "es" ? "ENVIAR CONSULTA" : "SEND INQUIRY"}
+        </a>
+      </div>
+    `;
+
+    propertyList.appendChild(card);
+  });
+}
+
+async function loadProperties() {
+  propertyList.innerHTML = "";
+
+  const loading = document.createElement("p");
+  loading.textContent = currentLanguage === "es"
+    ? "Cargando propiedades..."
+    : "Loading properties...";
+
+  propertyList.appendChild(loading);
+
+  const { data, error } = await supabaseClient
+    .from("properties")
+    .select("*")
+    .eq("status", "available")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error loading properties:", error);
+
+    propertyList.innerHTML = "";
+
+    const message = document.createElement("p");
+    message.textContent = currentLanguage === "es"
+      ? "No pudimos cargar las propiedades. Inténtalo de nuevo más tarde."
+      : "We couldn't load the properties. Please try again later.";
+
+    propertyList.appendChild(message);
+    return;
+  }
+
+  const properties = data || [];
+
+  // Load the photos belonging to these properties.
+  if (properties.length) {
+    const ids = properties.map(function (property) {
+      return property.id;
     });
-    document.getElementById("searchForm").addEventListener("submit", function (event) {
-      event.preventDefault();
-      const type = document.getElementById("typeFilter").value;
-      const location = document.getElementById("locationFilter").value
-        .trim().toLowerCase();
-      const purpose = document.getElementById("purposeFilter").value;
-      let visibleCount = 0;
-      document.querySelectorAll(".property").forEach(function (property) {
-        const matchesType = !type || property.dataset.type === type;
-        const matchesPurpose = !purpose || property.dataset.purpose === purpose;
-        const matchesLocation = !location ||
-          property.dataset.location.toLowerCase().includes(location);
-        const visible = matchesType && matchesPurpose && matchesLocation;
-        property.style.display = visible ? "" : "none";
-        if (visible) visibleCount++;
-      });
-      document.getElementById("noResults").hidden = visibleCount !== 0;
-      document.getElementById("propiedades").scrollIntoView({
-        behavior: "smooth"
+
+    const { data: photos, error: photoError } = await supabaseClient
+      .from("property_photos")
+      .select("*")
+      .in("property_id", ids)
+      .order("display_order", { ascending: true });
+
+    if (photoError) {
+      console.error("Error loading property photos:", photoError);
+    }
+
+    properties.forEach(function (property) {
+      property.property_photos = (photos || []).filter(function (photo) {
+        return photo.property_id === property.id;
       });
     });
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
+  }
+
+  allProperties = properties;
+  applyFilters();
+}
+
+function applyFilters() {
+  const type = document.getElementById("typeFilter").value;
+  const location = document.getElementById("locationFilter")
+    .value.trim().toLowerCase();
+  const purpose = document.getElementById("purposeFilter").value;
+
+  const filtered = allProperties.filter(function (property) {
+    const typeLabels = propertyType(property.property_type);
+    const purposeLabels = transactionType(property.transaction_type);
+
+    const matchesType = !type ||
+      type === typeLabels[0] ||
+      type === typeLabels[1];
+
+    const matchesPurpose = !purpose ||
+      purpose === purposeLabels[0] ||
+      purpose === purposeLabels[1];
+
+    const propertyLocation = [
+      property.city,
+      property.neighborhood
+    ].filter(Boolean).join(" ").toLowerCase();
+
+    const matchesLocation = !location ||
+      propertyLocation.includes(location);
+
+    return matchesType && matchesPurpose && matchesLocation;
+  });
+
+  renderProperties(filtered);
+}
+
+document.getElementById("searchForm").addEventListener(
+  "submit",
+  function (event) {
+    event.preventDefault();
+    applyFilters();
+
+    document.getElementById("propiedades").scrollIntoView({
+      behavior: "smooth"
+    });
+  }
+);
+
+document.getElementById("languageButton").addEventListener(
+  "click",
+  function () {
+    currentLanguage = currentLanguage === "es" ? "en" : "es";
+
+    document.documentElement.lang = currentLanguage;
+
+    document.querySelectorAll("[data-es][data-en]").forEach(function (element) {
+      element.textContent = element.getAttribute("data-" + currentLanguage);
+    });
+
+    document.querySelectorAll(
+      "[data-placeholder-es][data-placeholder-en]"
+    ).forEach(function (element) {
+      element.placeholder = element.getAttribute(
+        "data-placeholder-" + currentLanguage
+      );
+    });
+
+    document.getElementById("languageButton").textContent =
+      currentLanguage === "es" ? "EN" : "ES";
+
+    applyFilters();
+  }
+);
+
+document.getElementById("year").textContent = new Date().getFullYear();
+
+loadProperties();
+</script>
 </body>
 </html>
