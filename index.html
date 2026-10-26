@@ -46,20 +46,62 @@
       flex-wrap: wrap;
     }
 
-    .brand {
-      color: var(--gold);
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: 1px;
-    }
+  .brand {
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
 
-    .brand small {
-      display: block;
-      color: white;
-      font-size: 10px;
-      letter-spacing: 2px;
-      font-weight: normal;
-    }
+.brand-mark {
+  width: 60px;
+  height: 48px;
+  display: block;
+}
+
+.brand-wording {
+  display: block;
+  line-height: 1.05;
+}
+
+.brand-wording strong {
+  display: block;
+  color: var(--gold);
+  font-size: 25px;
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: 1.4px;
+}
+
+.brand-wording small {
+  display: block;
+  color: white;
+  font-size: 10px;
+  letter-spacing: 4px;
+  font-weight: normal;
+  margin-top: 4px;
+}
+
+@media (max-width: 520px) {
+  .brand {
+    gap: 6px;
+  }
+
+  .brand-mark {
+    width: 43px;
+    height: 38px;
+  }
+
+  .brand-wording strong {
+    font-size: 19px;
+  }
+
+  .brand-wording small {
+    font-size: 8px;
+    letter-spacing: 2.5px;
+  }
+}
 
     nav {
       display: flex;
@@ -463,10 +505,19 @@
 
 <body>
   <header>
-    <a href="#inicio" class="brand">
-      ROCIELLI
-      <small>INMOBILIARIA</small>
-    </a>
+<a href="#inicio" class="brand" aria-label="ROCIELLI INMOBILIARIA">
+  <svg class="brand-mark" viewBox="0 0 100 76" aria-hidden="true">
+    <path d="M8 61 L49 28 L91 61 L77 61 L49 40 L22 61 Z" fill="#c5a15b"/>
+    <path d="M42 29 V8 L51 2 V25 Z M55 25 V13 L64 19 V32 Z M68 34 V23 L76 29 V40 Z" fill="#c5a15b"/>
+    <path d="M31 56 V47 H40 V56 M47 56 V47 H56 V56 M63 56 V47 H72 V56" fill="#17231d"/>
+    <path d="M3 69 Q49 54 97 69" fill="none" stroke="#c5a15b" stroke-width="2"/>
+  </svg>
+
+  <span class="brand-wording">
+    <strong>ROCIELLI</strong>
+    <small>INMOBILIARIA</small>
+  </span>
+</a>
 
     <nav>
       <a href="#inicio" data-es="Inicio" data-en="Home">Inicio</a>
