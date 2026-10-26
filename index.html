@@ -447,7 +447,17 @@
     <p>inmobiliariarocielipy@gmail.com</p>
     <p style="margin-top:12px;">© <span id="year"></span> Rocielli Inmobiliaria. Todos los derechos reservados.</p>
   </footer>
-  <script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    const SUPABASE_URL = "https://ytcvrrwncopqkvutkacz.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_lYUm2-4zY8fo9w2qbs6ESg_Lq8ElBNG";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
     let currentLanguage = "es";
     const languageButton = document.getElementById("languageButton");
     languageButton.addEventListener("click", function () {
