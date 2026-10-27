@@ -545,8 +545,9 @@
           throw new Error(result.message || "The form service did not accept the submission.");
         }
         status.textContent = spanish
-          ? "Tu consulta fue enviada. Si es la primera vez, revisa tu correo para verificar la dirección de FormSubmit."
-          : "Your inquiry was submitted. If this is the first submission, check your inbox to verify your address with FormSubmit.";
+     status.textContent = spanish
+  ? "¡Gracias por contactarnos! Tu consulta ha sido enviada correctamente. Nos pondremos en contacto contigo pronto."
+  : "Thank you for contacting us! Your inquiry has been submitted successfully. We will get back to you soon.";
         form.reset();
         populateInquiryProperties();
       } catch (error) {
