@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#17231d">
+  <meta name="description" content="ROCIELLI INMOBILIARIA. Venta, alquiler y administración de propiedades en Paraguay.">
+  <title>ROCIELLI INMOBILIARIA | Propiedades en Paraguay</title>
+  <style>
+    :root{--green:#17231d;--gold:#c5a15b;--cream:#f8f6f0;--white:#fff;--text:#252922;--muted:#77796f}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Arial,Helvetica,sans-serif;background:var(--cream);color:var(--text);line-height:1.6}
+    a{color:inherit;text-decoration:none}
+    header{background:var(--green);color:var(--white);padding:18px 6%;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+    .brand{color:var(--gold);display:flex;align-items:center;gap:10px;flex-shrink:0}
+    .brand-mark{width:60px;height:48px;display:block}
+    .brand-wording{display:block;line-height:1.05}
+    .brand-wording strong{display:block;color:var(--gold);font-size:25px;font-family:Georgia,"Times New Roman",serif;letter-spacing:1.4px}
+    .brand-wording small{display:block;color:#fff;font-size:10px;letter-spacing:4px;font-weight:normal;margin-top:4px}
+    nav{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+    nav a{font-size:13px}nav a:hover{color:var(--gold)}
+    .language{background:transparent;color:#fff;border:1px solid var(--gold);padding:8px 10px;border-radius:4px;cursor:pointer}
+    .hero{min-height:440px;padding:75px 7%;display:flex;align-items:center;background:linear-gradient(90deg,rgba(12,20,15,.91),rgba(12,20,15,.36)),url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1800&q=85") center/cover;color:#fff}
+    .hero-content{max-width:650px}.eyebrow{color:var(--gold);font-size:12px;letter-spacing:3px;font-weight:bold;text-transform:uppercase}
+    h1{font-size:clamp(35px,7vw,58px);line-height:1.12;margin:18px 0}
+    .hero p{color:#eeeeea;max-width:520px;margin-bottom:25px}
+    .button{display:inline-block;padding:13px 20px;background:var(--gold);color:#172019;border:0;border-radius:3px;font-weight:bold;cursor:pointer;text-align:center}
+    .button:hover{opacity:.9}
+    .search-box{background:#fff;width:88%;max-width:1050px;margin:-30px auto 50px;padding:22px;position:relative;box-shadow:0 8px 30px rgba(0,0,0,.08);display:grid;grid-template-columns:repeat(3,1fr) auto;gap:12px}
+    .search-box select,.search-box input{min-width:0;width:100%;padding:13px;border:1px solid #deded6;border-radius:3px;background:#fff;font-size:14px}
+    section{padding:35px 6% 55px}.section-heading{text-align:center;margin-bottom:30px}
+    .section-heading h2{font-size:30px;margin:8px 0;color:var(--green)}.section-heading p{color:var(--muted)}
+    .properties{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;max-width:1200px;margin:auto}
+    .property{background:#fff;border:1px solid #eae8e0;overflow:hidden;transition:transform .2s;min-width:0}.property:hover{transform:translateY(-4px)}
+    .property-gallery{width:100%;overflow:hidden;background:#eee8dc}.gallery-main{position:relative;width:100%;height:240px;background:#eee8dc}
+    .gallery-main img{display:block;width:100%;height:100%;object-fit:cover}
+    .gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:38px;height:38px;border:0;border-radius:50%;background:rgba(23,35,29,.9);color:#fff;font-size:25px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .gallery-prev{left:10px}.gallery-next{right:10px}
+    .gallery-counter{position:absolute;right:10px;bottom:10px;background:rgba(23,35,29,.88);color:#fff;font-size:11px;padding:4px 9px;border-radius:3px}
+    .gallery-thumbnails{display:flex;gap:7px;padding:10px;overflow-x:auto;background:#fff;scrollbar-width:thin}
+    .gallery-thumbnail{flex:0 0 65px;width:65px;height:52px;padding:0;border:2px solid transparent;border-radius:3px;overflow:hidden;background:#eee8dc;cursor:pointer}
+    .gallery-thumbnail.active{border-color:var(--gold)}.gallery-thumbnail img{display:block;width:100%;height:100%;object-fit:cover}
+    .gallery-empty{height:240px;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:#665b47}
+    .property-content{padding:20px}.tag{display:inline-block;background:#f0e8d5;color:#735a2d;padding:4px 9px;font-size:11px;font-weight:bold;text-transform:uppercase}
+    .property h3{margin:12px 0 5px;font-size:19px;overflow-wrap:anywhere}.location{color:var(--muted);font-size:13px}
+    .price{margin:15px 0;color:#95743a;font-size:20px;font-weight:bold}
+    .details{display:flex;justify-content:space-between;border-top:1px solid #eee;padding-top:13px;font-size:12px;color:var(--muted);gap:8px;flex-wrap:wrap}
+    .property .button{display:block;margin-top:17px}
+    .about{background:var(--green);color:#fff;text-align:center;padding:65px 8%}.about h2{color:var(--gold);font-size:30px;margin-bottom:15px}
+    .about p{max-width:700px;margin:auto;color:#e5e5df}
+    .contact{text-align:center;padding:60px 6%}.contact h2{font-size:30px;color:var(--green);margin-bottom:12px}
+    .contact p{margin-bottom:22px;color:var(--muted)}
+    #propertyInquiryForm{width:100%;max-width:650px;margin:30px auto 0;padding:30px;background:#fff;border:1px solid #eae8e0;box-shadow:0 8px 30px rgba(0,0,0,.06);text-align:left}
+    #propertyInquiryForm .form-group{margin-bottom:20px}
+    #propertyInquiryForm label{display:block;margin-bottom:7px;color:var(--green);font-size:14px;font-weight:bold}
+    #propertyInquiryForm input:not(.form-honey),#propertyInquiryForm select,#propertyInquiryForm textarea{width:100%;padding:13px;border:1px solid #deded6;border-radius:3px;background:#fff;color:var(--text);font:inherit;font-size:14px}
+    #propertyInquiryForm textarea{min-height:120px;resize:vertical}
+    #propertyInquiryForm input:focus,#propertyInquiryForm select:focus,#propertyInquiryForm textarea:focus{outline:2px solid var(--gold);outline-offset:1px}
+    #propertyInquiryForm button{width:100%;font:inherit;font-weight:bold}
+    #propertyInquiryForm button:disabled{opacity:.6;cursor:not-allowed}
+    #propertyInquiryForm #inquiryStatus{margin:15px 0 0;overflow-wrap:anywhere}
+    #propertyInquiryForm .privacy-note{margin:15px 0 0;font-size:12px;color:var(--muted)}
+    #propertyInquiryForm .privacy-note a{color:#95743a;text-decoration:underline}
+    .form-honey{position:absolute!important;left:-5000px!important;width:1px!important;height:1px!important;overflow:hidden!important}
+    footer{background:#101812;color:#deded6;padding:30px 6%;text-align:center;font-size:12px}
+    footer strong{display:block;color:var(--gold);font-size:17px;margin-bottom:7px}
+    @media(max-width:800px){header{justify-content:center}nav{justify-content:center}.search-box{grid-template-columns:1fr 1fr}.properties{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:520px){header{padding:18px 4%}.brand{gap:6px}.brand-mark{width:43px;height:38px}.brand-wording strong{font-size:19px}.brand-wording small{font-size:8px;letter-spacing:2.5px}nav{gap:12px}nav a{font-size:12px}.hero{min-height:400px;padding:55px 6%}.search-box{width:92%;grid-template-columns:1fr}.properties{grid-template-columns:1fr}.gallery-main{height:260px}.gallery-empty{height:260px}.gallery-thumbnail{flex-basis:62px;width:62px;height:50px}#propertyInquiryForm{padding:20px 15px}}
+  </style>
+</head>
+<body>
+  <header>
+    <a href="#inicio" class="brand" aria-label="ROCIELLI INMOBILIARIA">
+      <svg class="brand-mark" viewBox="0 0 100 76" aria-hidden="true">
+        <path d="M8 61 L49 28 L91 61 L77 61 L49 40 L22 61 Z" fill="#c5a15b"/>
+        <path d="M42 29 V8 L51 2 V25 Z M55 25 V13 L64 19 V32 Z M68 34 V23 L76 29 V40 Z" fill="#c5a15b"/>
+        <path d="M31 56 V47 H40 V56 M47 56 V47 H56 V56 M63 56 V47 H72 V56" fill="#17231d"/>
+        <path d="M3 69 Q49 54 97 69" fill="none" stroke="#c5a15b" stroke-width="2"/>
+      </svg>
+      <span class="brand-wording"><strong>ROCIELLI</strong><small>INMOBILIARIA</small></span>
+    </a>
+    <nav>
+      <a href="#inicio" data-es="Inicio" data-en="Home">Inicio</a>
+      <a href="#propiedades" data-es="Propiedades" data-en="Properties">Propiedades</a>
+      <a href="#nosotros" data-es="Nosotros" data-en="About Us">Nosotros</a>
+      <a href="#contacto" data-es="Contacto" data-en="Contact">Contacto</a>
+      <button class="language" id="languageButton" type="button">EN</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-content">
+        <span class="eyebrow" data-es="Bienvenido a Rocielli" data-en="Welcome to Rocielli">Bienvenido a Rocielli</span>
+        <h1 data-es="Encuentra el lugar donde comienza tu historia." data-en="Find the place where your story begins.">Encuentra el lugar donde comienza tu historia.</h1>
+        <p data-es="Descubre propiedades seleccionadas para vivir, invertir y construir tu futuro en Paraguay." data-en="Discover carefully selected properties to live, invest, and build your future in Paraguay.">Descubre propiedades seleccionadas para vivir, invertir y construir tu futuro en Paraguay.</p>
+        <a href="#propiedades" class="button" data-es="EXPLORAR PROPIEDADES" data-en="EXPLORE PROPERTIES">EXPLORAR PROPIEDADES</a>
+      </div>
+    </section>
+
+    <form class="search-box" id="searchForm">
+      <select id="typeFilter" aria-label="Property type">
+        <option value="" data-es="Todos los tipos" data-en="All property types">Todos los tipos</option>
+        <option value="apartment" data-es="Apartamento" data-en="Apartment">Apartamento</option>
+        <option value="house" data-es="Casa" data-en="House">Casa</option>
+        <option value="land" data-es="Terreno" data-en="Land">Terreno</option>
+        <option value="commercial" data-es="Comercial" data-en="Commercial">Comercial</option>
+      </select>
+      <input id="locationFilter" type="search" placeholder="Ciudad o barrio" data-placeholder-es="Ciudad o barrio" data-placeholder-en="City or neighborhood" aria-label="City or neighborhood">
+      <select id="purposeFilter" aria-label="Transaction type">
+        <option value="" data-es="Venta y alquiler" data-en="Sale and rent">Venta y alquiler</option>
+        <option value="rent" data-es="Alquiler" data-en="Rent">Alquiler</option>
+        <option value="sale" data-es="Venta" data-en="Sale">Venta</option>
+      </select>
+      <button type="submit" class="button" data-es="BUSCAR" data-en="SEARCH">BUSCAR</button>
+    </form>
+
+    <section id="propiedades">
+      <div class="section-heading">
+        <span class="eyebrow">ROCIELLI INMOBILIARIA</span>
+        <h2 data-es="Propiedades destacadas" data-en="Featured Properties">Propiedades destacadas</h2>
+        <p data-es="Descubre oportunidades inmobiliarias en Paraguay." data-en="Discover real estate opportunities in Paraguay.">Descubre oportunidades inmobiliarias en Paraguay.</p>
+      </div>
+      <div class="properties" id="propertyList"><p>Cargando propiedades...</p></div>
+      <p id="noResults" hidden style="text-align:center;padding:30px;">No se encontraron propiedades con esos filtros.</p>
+    </section>
+
+    <section class="about" id="nosotros">
+      <h2 data-es="Tu próximo capítulo comienza aquí." data-en="Your next chapter begins here.">Tu próximo capítulo comienza aquí.</h2>
+      <p data-es="En Rocielli Inmobiliaria te ayudamos a explorar oportunidades de venta, alquiler y administración de propiedades en Paraguay, con atención profesional y personalizada." data-en="At Rocielli Inmobiliaria, we help you explore property sales, rentals, and property management opportunities in Paraguay with professional, personalized service.">En Rocielli Inmobiliaria te ayudamos a explorar oportunidades de venta, alquiler y administración de propiedades en Paraguay, con atención profesional y personalizada.</p>
+    </section>
+
+    <section class="contact" id="contacto">
+      <div class="section-heading">
+        <span class="eyebrow">ROCIELLI INMOBILIARIA</span>
+        <h2 data-es="¿Buscas tu próxima propiedad?" data-en="Looking for your next property?">¿Buscas tu próxima propiedad?</h2>
+        <p data-es="Completa el formulario y nos pondremos en contacto contigo." data-en="Complete the form and we will contact you.">Completa el formulario y nos pondremos en contacto contigo.</p>
+      </div>
+
+      <form id="propertyInquiryForm" action="https://formsubmit.co/ajax/inmobiliariarocielipy@gmail.com" method="POST">
+        <input type="hidden" name="_subject" value="Nueva consulta - Rocielli Inmobiliaria">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="Origen" value="Sitio web Rocielli Inmobiliaria">
+        <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="form-honey">
+
+        <div class="form-group">
+          <label for="inquiryName" data-es="Nombre completo" data-en="Full name">Nombre completo</label>
+          <input type="text" id="inquiryName" name="Nombre completo" placeholder="Tu nombre completo" data-placeholder-es="Tu nombre completo" data-placeholder-en="Your full name" maxlength="100" autocomplete="name" required>
+        </div>
+        <div class="form-group">
+          <label for="inquiryEmail" data-es="Correo electrónico" data-en="Email address">Correo electrónico</label>
+          <input type="email" id="inquiryEmail" name="Email del visitante" placeholder="tu@email.com" data-placeholder-es="tu@email.com" data-placeholder-en="you@email.com" maxlength="254" autocomplete="email" required>
+        </div>
+        <div class="form-group">
+          <label for="inquiryType" data-es="Tipo de consulta" data-en="Inquiry type">Tipo de consulta</label>
+          <select id="inquiryType" name="Tipo de consulta" required>
+            <option value="" data-es="Selecciona una opción" data-en="Select an option">Selecciona una opción</option>
+            <option value="Alquiler" data-es="Alquiler" data-en="Rent">Alquiler</option>
+            <option value="Compra" data-es="Compra" data-en="Buy">Compra</option>
+            <option value="Administración de propiedades" data-es="Administración de propiedades" data-en="Property management">Administración de propiedades</option>
+            <option value="Otra consulta" data-es="Otra consulta" data-en="Other inquiry">Otra consulta</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="inquiryProperty" data-es="Propiedad de interés" data-en="Property of interest">Propiedad de interés</label>
+          <select id="inquiryProperty" name="Propiedad de interés" required>
+            <option value="" data-es="Selecciona una propiedad" data-en="Select a property">Selecciona una propiedad</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="inquiryMessage" data-es="Tu mensaje" data-en="Your message">Tu mensaje</label>
+          <textarea id="inquiryMessage" name="Mensaje" rows="5" placeholder="Escribe tu consulta aquí..." data-placeholder-es="Escribe tu consulta aquí..." data-placeholder-en="Write your inquiry here..." maxlength="3000" required></textarea>
+        </div>
+        <button type="submit" class="button" id="inquirySubmit" data-es="ENVIAR CONSULTA" data-en="SEND INQUIRY">ENVIAR CONSULTA</button>
+        <p id="inquiryStatus" role="status" aria-live="polite"></p>
+        <p class="privacy-note">
+          <span data-es="Al enviar este formulario, aceptas que utilicemos tus datos para responder a tu consulta. Consulta nuestra" data-en="By submitting this form, you agree that we may use your information to respond to your inquiry. Read our">Al enviar este formulario, aceptas que utilicemos tus datos para responder a tu consulta. Consulta nuestra</span>
+          <a href="privacy.html" data-es="Política de Privacidad" data-en="Privacy Policy">Política de Privacidad</a>.
+        </p>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <strong>ROCIELLI INMOBILIARIA</strong>
+    <p>VENTA • ALQUILER • ADMINISTRACIÓN DE PROPIEDADES</p>
+    <p><a href="mailto:inmobiliariarocielipy@gmail.com" style="color:#deded6;">inmobiliariarocielipy@gmail.com</a></p>
+    <p style="margin-top:12px;">© <span id="year"></span> Rocielli Inmobiliaria. Todos los derechos reservados.</p>
+    <p style="margin-top:12px;"><a href="privacy.html" style="color:#c5a15b;text-decoration:underline;">Política de Privacidad</a></p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://ytcvrrwncopqkvutkacz.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_lYUm2-4zY8fo9w2qbs6ESg_Lq8ElBNG";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    let currentLanguage = "es";
+    let allProperties = [];
+    const propertyList = document.getElementById("propertyList");
+    const noResults = document.getElementById("noResults");
+
+    function propertyType(value) {
+      const types = {
+        apartment:["Apartamento","Apartment"], house:["Casa","House"],
+        land:["Terreno","Land"], commercial:["Comercial","Commercial"]
+      };
+      return types[value] || ["Propiedad","Property"];
+    }
+
+    function transactionType(value) {
+      const types = {rent:["Alquiler","For Rent"],sale:["Venta","For Sale"]};
+      return types[value] || ["",""];
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, function(char) {
+        return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char];
+      });
+    }
+
+    function formatPrice(property) {
+      if (property.price == null || property.price === "") {
+        return currentLanguage === "es" ? "Consultar precio" : "Price upon request";
+      }
+      const currency = property.currency || "PYG";
+      const amount = Number(property.price);
+      if (!Number.isFinite(amount)) return escapeHTML(property.price);
+      try {
+        return new Intl.NumberFormat(currentLanguage === "es" ? "es-PY" : "en-US", {
+          style:"currency",currency:currency,maximumFractionDigits:0
+        }).format(amount);
+      } catch (error) {
+        return escapeHTML(amount) + " " + escapeHTML(currency);
+      }
+    }
+
+    function getPropertyPhotos(property) {
+      const photos = Array.isArray(property.property_photos) ? [...property.property_photos] : [];
+      photos.sort((a,b) => (a.display_order ?? 0) - (b.display_order ?? 0));
+      const urls = [];
+      if (property.cover_image_url) urls.push(property.cover_image_url);
+      photos.forEach(photo => {
+        if (photo.image_url && !urls.includes(photo.image_url)) urls.push(photo.image_url);
+      });
+      return urls;
+    }
+
+    function createPropertyGallery(property, title) {
+      const photos = getPropertyPhotos(property);
+      const gallery = document.createElement("div");
+      gallery.className = "property-gallery";
+      if (!photos.length) {
+        const empty = document.createElement("div");
+        empty.className = "gallery-empty";
+        empty.textContent = currentLanguage === "es" ? "Fotos no disponibles" : "No photos available";
+        gallery.appendChild(empty);
+        return gallery;
+      }
+
+      let currentIndex = 0;
+      const main = document.createElement("div");
+      main.className = "gallery-main";
+      const mainImage = document.createElement("img");
+      mainImage.src = photos[0];
+      mainImage.alt = title;
+      mainImage.loading = "lazy";
+      main.appendChild(mainImage);
+      let counter = null, previousButton = null, nextButton = null;
+
+      if (photos.length > 1) {
+        previousButton = document.createElement("button");
+        previousButton.type = "button";
+        previousButton.className = "gallery-arrow gallery-prev";
+        previousButton.innerHTML = "&#8249;";
+        previousButton.setAttribute("aria-label",currentLanguage === "es" ? "Foto anterior" : "Previous photo");
+        nextButton = document.createElement("button");
+        nextButton.type = "button";
+        nextButton.className = "gallery-arrow gallery-next";
+        nextButton.innerHTML = "&#8250;";
+        nextButton.setAttribute("aria-label",currentLanguage === "es" ? "Foto siguiente" : "Next photo");
+        counter = document.createElement("span");
+        counter.className = "gallery-counter";
+        counter.textContent = "1 / " + photos.length;
+        main.append(previousButton,nextButton,counter);
+      }
+      gallery.appendChild(main);
+
+      const thumbnailContainer = document.createElement("div");
+      thumbnailContainer.className = "gallery-thumbnails";
+      const thumbnailButtons = [];
+      if (photos.length > 1) {
+        photos.forEach((photo,index) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "gallery-thumbnail" + (index === 0 ? " active" : "");
+          button.setAttribute("aria-label",(currentLanguage === "es" ? "Ver foto " : "View photo ") + (index+1));
+          button.setAttribute("aria-pressed",String(index === 0));
+          const image = document.createElement("img");
+          image.src = photo; image.alt = ""; image.loading = "lazy";
+          button.appendChild(image);
+          button.addEventListener("click",() => showPhoto(index));
+          thumbnailButtons.push(button);
+          thumbnailContainer.appendChild(button);
+        });
+        gallery.appendChild(thumbnailContainer);
+      }
+
+      function showPhoto(index) {
+        currentIndex = (index + photos.length) % photos.length;
+        mainImage.src = photos[currentIndex];
+        mainImage.alt = title + " - " + (currentIndex+1);
+        if (counter) counter.textContent = (currentIndex+1) + " / " + photos.length;
+        thumbnailButtons.forEach((button,i) => {
+          const active = i === currentIndex;
+          button.classList.toggle("active",active);
+          button.setAttribute("aria-pressed",String(active));
+          if (active) button.scrollIntoView({behavior:"smooth",block:"nearest",inline:"nearest"});
+        });
+      }
+      if (previousButton) previousButton.addEventListener("click",() => showPhoto(currentIndex-1));
+      if (nextButton) nextButton.addEventListener("click",() => showPhoto(currentIndex+1));
+      mainImage.addEventListener("error",() => {
+        mainImage.alt = currentLanguage === "es" ? "No se pudo cargar esta foto" : "This photo could not be loaded";
+      });
+      return gallery;
+    }
+
+    function buildPropertyLabel(property) {
+      const title = currentLanguage === "es"
+        ? (property.title_es || property.title_en || "Propiedad")
+        : (property.title_en || property.title_es || "Property");
+      const location = [property.neighborhood,property.city].filter(Boolean).join(", ");
+      return title + (location ? " — " + location : "");
+    }
+
+    function populateInquiryProperties() {
+      const select = document.getElementById("inquiryProperty");
+      const selectedValue = select.value;
+      select.innerHTML = "";
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = currentLanguage === "es" ? "Selecciona una propiedad" : "Select a property";
+      select.appendChild(placeholder);
+      allProperties.forEach(property => {
+        const option = document.createElement("option");
+        option.value = String(property.id);
+        option.textContent = buildPropertyLabel(property);
+        select.appendChild(option);
+      });
+      if (selectedValue && Array.from(select.options).some(option => option.value === selectedValue)) {
+        select.value = selectedValue;
+      }
+    }
+
+    function renderProperties(properties) {
+      propertyList.innerHTML = "";
+      if (!properties.length) {
+        noResults.hidden = false;
+        noResults.textContent = currentLanguage === "es"
+          ? "No hay propiedades disponibles que coincidan con tu búsqueda."
+          : "No available properties match your search.";
+        return;
+      }
+      noResults.hidden = true;
+
+      properties.forEach(property => {
+        const type = propertyType(property.property_type);
+        const purpose = transactionType(property.transaction_type);
+        const title = currentLanguage === "es"
+          ? (property.title_es || property.title_en || "Propiedad")
+          : (property.title_en || property.title_es || "Property");
+        const description = currentLanguage === "es"
+          ? (property.description_es || property.description_en || "")
+          : (property.description_en || property.description_es || "");
+        const location = [property.neighborhood,property.city].filter(Boolean).join(", ");
+        const details = [];
+        if (property.bedrooms != null) details.push(currentLanguage === "es" ? property.bedrooms + " habitaciones" : property.bedrooms + " bedrooms");
+        if (property.bathrooms != null) details.push(currentLanguage === "es" ? property.bathrooms + " baños" : property.bathrooms + " bathrooms");
+        if (property.area_m2 != null) details.push(property.area_m2 + " m²");
+
+        const card = document.createElement("article");
+        card.className = "property";
+        card.dataset.type = type[0];
+        card.dataset.purpose = purpose[0];
+        card.dataset.location = location;
+        card.appendChild(createPropertyGallery(property,title));
+
+        const content = document.createElement("div");
+        content.className = "property-content";
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = purpose[currentLanguage === "es" ? 0 : 1];
+        const heading = document.createElement("h3");
+        heading.textContent = title;
+        const locationText = document.createElement("p");
+        locationText.className = "location";
+        locationText.textContent = location || "Paraguay";
+        const price = document.createElement("p");
+        price.className = "price";
+        price.textContent = formatPrice(property);
+        const detailRow = document.createElement("div");
+        detailRow.className = "details";
+        const typeText = document.createElement("span");
+        typeText.textContent = type[currentLanguage === "es" ? 0 : 1];
+        const extraDetails = document.createElement("span");
+        extraDetails.textContent = details.join(" · ");
+        detailRow.append(typeText,extraDetails);
+        content.append(tag,heading,locationText,price,detailRow);
+
+        if (description) {
+          const descriptionText = document.createElement("p");
+          descriptionText.style.marginTop = "14px";
+          descriptionText.style.fontSize = "13px";
+          descriptionText.textContent = description;
+          content.appendChild(descriptionText);
+        }
+
+        const inquiry = document.createElement("a");
+        inquiry.className = "button inquiry";
+        inquiry.href = "#contacto";
+        inquiry.textContent = currentLanguage === "es" ? "ENVIAR CONSULTA" : "SEND INQUIRY";
+        inquiry.setAttribute("aria-label",(currentLanguage === "es" ? "Consultar sobre " : "Inquire about ") + title);
+        inquiry.addEventListener("click",() => {
+          const select = document.getElementById("inquiryProperty");
+          const id = String(property.id);
+          let option = Array.from(select.options).find(item => item.value === id);
+          if (!option) {
+            option = document.createElement("option");
+            option.value = id;
+            select.appendChild(option);
+          }
+          option.textContent = buildPropertyLabel(property);
+          select.value = id;
+          document.getElementById("contacto").scrollIntoView({behavior:"smooth"});
+          window.setTimeout(() => document.getElementById("inquiryName").focus({preventScroll:true}),450);
+        });
+        content.appendChild(inquiry);
+        card.appendChild(content);
+        propertyList.appendChild(card);
+      });
+    }
+
+    async function loadProperties() {
+      propertyList.innerHTML = "";
+      const loading = document.createElement("p");
+      loading.textContent = currentLanguage === "es" ? "Cargando propiedades..." : "Loading properties...";
+      propertyList.appendChild(loading);
+
+      const {data,error} = await supabaseClient
+        .from("properties").select("*").eq("status","available")
+        .order("created_at",{ascending:false});
+
+      if (error) {
+        console.error("Error loading properties:",error);
+        propertyList.innerHTML = "";
+        const message = document.createElement("p");
+        message.textContent = currentLanguage === "es"
+          ? "No pudimos cargar las propiedades. Inténtalo de nuevo más tarde."
+          : "We couldn't load the properties. Please try again later.";
+        propertyList.appendChild(message);
+        return;
+      }
+
+      const properties = data || [];
+      if (properties.length) {
+        const ids = properties.map(property => property.id);
+        const {data:photos,error:photoError} = await supabaseClient
+          .from("property_photos").select("*").in("property_id",ids)
+          .order("display_order",{ascending:true});
+        if (photoError) console.error("Error loading property photos:",photoError);
+        properties.forEach(property => {
+          property.property_photos = (photos || []).filter(photo => photo.property_id === property.id);
+        });
+      }
+      allProperties = properties;
+      populateInquiryProperties();
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const type = document.getElementById("typeFilter").value;
+      const location = document.getElementById("locationFilter").value.trim().toLowerCase();
+      const purpose = document.getElementById("purposeFilter").value;
+      const filtered = allProperties.filter(property => {
+        const matchesType = !type || property.property_type === type;
+        const matchesPurpose = !purpose || property.transaction_type === purpose;
+        const propertyLocation = [property.city,property.neighborhood].filter(Boolean).join(" ").toLowerCase();
+        const matchesLocation = !location || propertyLocation.includes(location);
+        return matchesType && matchesPurpose && matchesLocation;
+      });
+      renderProperties(filtered);
+    }
+
+    document.getElementById("searchForm").addEventListener("submit",event => {
+      event.preventDefault();
+      applyFilters();
+      document.getElementById("propiedades").scrollIntoView({behavior:"smooth"});
+    });
+
+    document.getElementById("languageButton").addEventListener("click",() => {
+      currentLanguage = currentLanguage === "es" ? "en" : "es";
+      document.documentElement.lang = currentLanguage;
+      document.querySelectorAll("[data-es][data-en]").forEach(element => {
+        element.textContent = element.getAttribute("data-" + currentLanguage);
+      });
+      document.querySelectorAll("[data-placeholder-es][data-placeholder-en]").forEach(element => {
+        element.placeholder = element.getAttribute("data-placeholder-" + currentLanguage);
+      });
+      document.getElementById("languageButton").textContent = currentLanguage === "es" ? "EN" : "ES";
+      populateInquiryProperties();
+      applyFilters();
+    });
+
+    document.getElementById("propertyInquiryForm").addEventListener("submit",async event => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const button = document.getElementById("inquirySubmit");
+      const status = document.getElementById("inquiryStatus");
+      const spanish = currentLanguage === "es";
+      if (!form.reportValidity()) return;
+
+      button.disabled = true;
+      button.textContent = spanish ? "ENVIANDO..." : "SENDING...";
+      status.textContent = spanish ? "Enviando tu consulta..." : "Sending your inquiry...";
+
+      try {
+        const response = await fetch(form.action,{
+          method:"POST",
+          body:new FormData(form),
+          headers:{"Accept":"application/json"}
+        });
+        let result = {};
+        try { result = await response.json(); } catch (error) {}
+        if (!response.ok || result.success === false || result.success === "false") {
+          throw new Error(result.message || "The form service did not accept the submission.");
+        }
+        status.textContent = spanish
+          ? "Tu consulta fue enviada. Si es la primera vez, revisa tu correo para verificar la dirección de FormSubmit."
+          : "Your inquiry was submitted. If this is the first submission, check your inbox to verify your address with FormSubmit.";
+        form.reset();
+        populateInquiryProperties();
+      } catch (error) {
+        console.error("Contact form submission failed:",error);
+        status.textContent = spanish
+          ? "No pudimos confirmar el envío. Inténtalo de nuevo o escríbenos a inmobiliariarocielipy@gmail.com."
+          : "We couldn't confirm the submission. Please try again or email inmobiliariarocielipy@gmail.com.";
+      } finally {
+        button.disabled = false;
+        button.textContent = spanish ? "ENVIAR CONSULTA" : "SEND INQUIRY";
+      }
+    });
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+    loadProperties();
+  </script>
+</body>
+</html>
