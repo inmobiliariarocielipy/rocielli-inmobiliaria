@@ -200,6 +200,57 @@
     const propertyList = document.getElementById("propertyList");
     const noResults = document.getElementById("noResults");
 
+    // =====================================
+// ROCIELLI INMOBILIARIA VISITOR TRACKING
+// =====================================
+
+async function trackWebsiteVisit() {
+  try {
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
+
+    // Detect device type
+    const userAgent = navigator.userAgent;
+    let deviceType = "desktop";
+
+    if (/iPad|Tablet/i.test(userAgent)) {
+      deviceType = "tablet";
+    } else if (/Mobi|Android|iPhone|iPod/i.test(userAgent)) {
+      deviceType = "mobile";
+    }
+
+    // Save the visit to Supabase
+    const visit = {
+      page_path: window.location.pathname.slice(0, 500) || "/",
+      referrer: document.referrer
+        ? document.referrer.slice(0, 1000)
+        : null,
+      utm_source: params.get("utm_source")?.slice(0, 200) || null,
+      utm_medium: params.get("utm_medium")?.slice(0, 200) || null,
+      utm_campaign: params.get("utm_campaign")?.slice(0, 200) || null,
+      device_type: deviceType,
+      browser_language: navigator.language
+        ? navigator.language.slice(0, 35)
+        : null
+    };
+
+    const { error } = await supabaseClient
+      .from("visitor_events")
+      .insert([visit]);
+
+    if (error) {
+      console.error("Visitor tracking error:", error.message);
+    } else {
+      console.log("Website visit recorded successfully.");
+    }
+  } catch (error) {
+    console.error("Visitor tracking failed:", error);
+  }
+}
+
+// Record this page visit
+trackWebsiteVisit();
+
     function propertyType(value) {
       const types = {
         apartment:["Apartamento","Apartment"], house:["Casa","House"],
