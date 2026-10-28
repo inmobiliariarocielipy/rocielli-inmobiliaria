@@ -564,5 +564,46 @@
     document.getElementById("year").textContent = new Date().getFullYear();
     loadProperties();
   </script>
+  <!-- Rocielli Inmobiliaria Direct Email Button -->
+<a
+  href="mailto:inmobiliariarocielipy@gmail.com?subject=Consulta%20de%20alquiler%20-%20Rocielli%20Inmobiliaria"
+  class="rocielli-email-button"
+  aria-label="Contactar con Rocielli Inmobiliaria por correo electrónico"
+>
+  ✉️ Contact Us
+</a>
+
+<style>
+  .rocielli-email-button {
+    position: fixed;
+    right: 18px;
+    bottom: 20px;
+    z-index: 99999;
+    display: inline-block;
+    padding: 14px 20px;
+    background: #174c35;
+    color: #ffffff;
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transition: background 0.2s ease;
+  }
+
+  .rocielli-email-button:hover {
+    background: #236b4b;
+  }
+
+  @media (max-width: 480px) {
+    .rocielli-email-button {
+      right: 12px;
+      bottom: 15px;
+      padding: 12px 16px;
+      font-size: 14px;
+    }
+  }
+</style>
 </body>
 </html>
